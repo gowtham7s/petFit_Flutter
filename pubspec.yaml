@@ -38,9 +38,24 @@ dependencies:
   cupertino_icons: ^1.0.2
 
   #Firebase Database
-  cloud_firestore: ^4.1.0
+  #cloud_firestore: ^4.1.0
   #Carousel
   carousel_slider: ^4.1.1
+  #video_player:
+  video_player: ^2.4.7
+  chewie: ^1.3.5
+  #date_format:
+  date_format:
+  #SQL database
+  sqflite: ^2.2.0+3
+  #path provider:
+  path_provider: ^2.0.11
+  #image_picker:
+  image_picker: ^0.8.6
+  #webview_flutter:
+  webview_flutter: ^3.0.4
+  #phone call:
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:

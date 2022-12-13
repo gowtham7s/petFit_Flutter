@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:pet_fit/Model/Pet.dart';
+import 'package:pet_fit/database/petServices.dart';
+import 'package:pet_fit/screens/petAlbum.dart';
+import 'package:pet_fit/screens/schedulePetActivities.dart';
+import 'package:pet_fit/screens/viewSchedule.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PetDetailPage extends StatefulWidget {
-  const PetDetailPage({Key? key}) : super(key: key);
+  final Pet petDetail;
+  //const PetDetailPage({Key? key, required this.petDetail}) : super(key: key);
+
+  const PetDetailPage({super.key, required this.petDetail});
 
   @override
   State<PetDetailPage> createState() => _PetDetailPageState();
@@ -9,6 +18,22 @@ class PetDetailPage extends StatefulWidget {
 
 class _PetDetailPageState extends State<PetDetailPage> {
 
+  List<String> lists = ['Pet Name : ', 'Pet Age : ', 'Pet Location : ', 'Pet Breed : '];
+  final _petService = PetServices();
+
+  String getItem(int index) {
+    switch (index) {
+      case 0:
+        return widget.petDetail.name ?? "";
+      case 1:
+        return widget.petDetail.dob ?? "";
+      case 2:
+        return widget.petDetail.location ?? "";
+      case 3:
+        return widget.petDetail.breed ?? "";
+    }
+    return "";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +70,16 @@ class _PetDetailPageState extends State<PetDetailPage> {
                       shrinkWrap:true,
                       itemBuilder: (BuildContext context, int index) {
                         return Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
+                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                             constraints: const BoxConstraints(minHeight: 30),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                 Text('Pet name :',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                                 SizedBox(width: 10,),
-                                 Text('Street Dog',style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                              children: [
+                                 Expanded( flex: 1,
+                                     child: Text(lists[index],style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+                                 //const SizedBox(width: 10,),
+                                Expanded(flex: 2,
+                                    child: Text(getItem(index),style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
                               ],
                             ));
                       }),
@@ -69,7 +96,7 @@ class _PetDetailPageState extends State<PetDetailPage> {
                           ///Space 10
                           const SizedBox(height: 10,),
                           ///Owner details text
-                          _buildTextField(),
+                          _buildTextField(widget.petDetail.ownerDetails),
 
                           ///Album
                           Row(
@@ -78,7 +105,11 @@ class _PetDetailPageState extends State<PetDetailPage> {
                               const Text('Album',
                                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
                               IconButton(onPressed: () {
-                                print('pressed');
+                                //print('pressed');
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => const PetAlbumPage()));
                               }, icon: const Icon(Icons.image_outlined)),
                             ],
                           ),
@@ -97,18 +128,25 @@ class _PetDetailPageState extends State<PetDetailPage> {
                               Column(
                                 children: [
                                   IconButton(onPressed: () {
-                                    print('create pressed');
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SchedulePetPage(petDetail: widget.petDetail,)));
                                   }, icon: const Icon(Icons.calendar_month_outlined)),
-                                  Text('Create'),
+                                  const Text('Create'),
                                 ],
                               ),
 
                               Column(
                                 children: [
                                   IconButton(onPressed: () {
-                                    print('view pressed');
+                                    //print('view pressed');
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ViewSchedulePage(id: widget.petDetail.id!,)));
                                   }, icon: const Icon(Icons.view_timeline_outlined)),
-                                  Text('View'),
+                                  const Text('View'),
                                 ],
                               ),
                             ],
@@ -127,7 +165,9 @@ class _PetDetailPageState extends State<PetDetailPage> {
                                   foregroundColor: MaterialStateProperty.all(Colors.black),
                                 ),
                                 onPressed: () {
-                                  print('call pressed');
+                                  setState(() {
+                                    _launchUrl();
+                                  });
                                 },
                                 child: SizedBox(
                                   width: mediaQuery.size.width / 3,
@@ -140,8 +180,12 @@ class _PetDetailPageState extends State<PetDetailPage> {
                                   backgroundColor: MaterialStateProperty.all(Colors.white),
                                   foregroundColor: MaterialStateProperty.all(Colors.black),
                                 ),
-                                onPressed: () {
-                                  print('delete pressed');
+                                onPressed: () async {
+                                  showAlert();
+                                  // var result = await _petService.removePet(widget.petDetail.id!);
+                                  // if (result != null) {
+                                  //   Navigator.pop(context);
+                                  // }
                                 },
                                 child: SizedBox(
                                   width: mediaQuery.size.width / 3,
@@ -153,6 +197,7 @@ class _PetDetailPageState extends State<PetDetailPage> {
                         ],
                     ),
                   ),
+
                 ],
               ),
             ),
@@ -161,19 +206,54 @@ class _PetDetailPageState extends State<PetDetailPage> {
     );
   }
 
-  Widget _buildTextField() {
+  Widget _buildTextField(String? text) {
 
-    return const TextField(
+    return TextField(
       enabled: false,
       keyboardType: TextInputType.multiline,
       maxLines: null,
-      minLines: 1,
+      minLines: 4,
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
-        hintText: "sdfasdfa dfasd asf asdlkfj asldfjal dflas;jfd laksdjflk ajsdflka dlkfjasldk jalsdfj alsdf laksdjflak jdsflka jsdlfkja lsdkfjlak sdjflaksd jasdkfj alksdfalkdsfj laksdjfl asf",
+        hintText: text,
         border: InputBorder.none,
       ),
     );
+  }
+
+  Future<void> _launchUrl() async {
+    if (!await launchUrl(Uri.parse('tel:+1-555-010-999'))) {
+      throw 'Could not launch tel:+1-555-010-999';
+    }
+  }
+
+  showAlert() {
+    showDialog(context: context,
+        barrierDismissible: false,
+        useRootNavigator: false,
+        builder: (BuildContext context){
+          return AlertDialog(
+            //insetPadding: EdgeInsets.symmetric(horizontal: 0),
+            title: const Text("Delete"),
+            content: const Text('Are you sure you want to delete'),
+            actions: [
+              TextButton(onPressed: () async {
+                var result = await _petService.removePet(widget.petDetail.id!);
+                if (result != null) {
+                   Navigator.pop(context, 0);
+                }
+              }, child: const Text('Yes', style: TextStyle(color: Colors.teal),)),
+
+              TextButton(onPressed: () {
+                Navigator.pop(context, 1);
+              }, child: const Text('No', style: TextStyle(color: Colors.teal),))
+            ],
+          );
+        }).then((value) {
+          if (value == 0) {
+            Navigator.of(context).pop(); }
+        });
+
   }
 }
