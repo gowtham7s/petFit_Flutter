@@ -14,16 +14,11 @@ class _PetAlbumPageState extends State<PetAlbumPage> {
   var imageList = [
     'assets/dog.png',
     'assets/dog.png',
+    'assets/petFit.png',
     'assets/dog.png',
     'assets/dog.png',
     'assets/petFit.png',
-    'assets/dog.png',
-    'assets/petFit.png',
-    'assets/dog.png',
-    'assets/petFit.png',
-    'assets/dog.png',
-    'assets/petFit.png',
-    'assets/dog.png',
+
   ];
 
   @override

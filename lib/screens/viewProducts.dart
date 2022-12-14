@@ -27,7 +27,7 @@ class _ViewProductPageState extends State<ViewProductPage> {
       productModel.quantity = product['quantity'];
       _productList.add(productModel);
     });
-    print(_productList.length);
+    setState(() {});
   }
 
   @override
@@ -37,85 +37,93 @@ class _ViewProductPageState extends State<ViewProductPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer:  const Padding(
-        padding: EdgeInsets.fromLTRB(0, 80, 0, 0),
-        child: ProductNavigationDrawer(),),
-      appBar: AppBar(
-        title: const Text('Products'),
-        centerTitle: true,
-      ),
-      backgroundColor: Colors.grey,
-        body: FutureBuilder(
-        future: getAllProducts(),
-        builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-          return ListView.builder(
-            //itemExtent: 70,
-            //shrinkWrap: true,
-            itemBuilder: (context, index) {
-              final id = index + 1;
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 1),
-                child: ListTile(
-                  dense: true,
-                  leading: const SizedBox(
-                    //width: 50,
-                    // height: 80,
-                      child: Image(image: AssetImage('assets/petFit.png'),)
-                  ),
-                  title: Text("$id. ${_productList[index].name!} \n\₹ ${_productList[index].price!}"),
-                  subtitle: Text('Quantity: ${_productList[index].quantity!}', style: const TextStyle(
-                    color: Colors.black,
-                  ),),
-                  trailing: IconButton(onPressed: () {
-                    showDialog(context: context,
-                        barrierDismissible: false,
-                        builder: (BuildContext context) {
-                          //set up the buttons
-                          Widget cancelButton = TextButton(
-                            child: const Text(
-                              "CANCEL", style: TextStyle(color: Colors.teal),),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          );
-                          Widget okButton = TextButton(
-                            child: const Text(
-                              "OK", style: TextStyle(color: Colors.teal),),
-                            onPressed: () async {
-                              var result = await _petService.removeProduct(_productList[index].id!);
-                              if (result != null) {
-                                //showAlert();
-                                setState(() {
-                                  getAllProducts();
-                                });
-                                Navigator.of(context).pop();
-                              }
-                            },
-                          );
-
-                          return AlertDialog(
-                            title: const Text("Confirm Delete"),
-                            content: const Text(
-                                'This product will be deleted forever'),
-                            actions: [
-                              cancelButton,
-                              okButton,
-                            ],
-                          );
-                        });
-                  }, icon: const Icon(Icons.delete_forever),
-
-                  ),
-                  tileColor: Colors.white,
-                ),
-              );
-            }, itemCount: _productList.length,
-          );
-        }
+        drawer:  const Padding(
+          padding: EdgeInsets.fromLTRB(0, 80, 0, 0),
+          child: ProductNavigationDrawer(),),
+        appBar: AppBar(
+          title: const Text('Products'),
+          centerTitle: true,
         ),
-    );
+        backgroundColor: Colors.grey,
+          body: FutureBuilder(
+          //future: getAllProducts(),
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            return RefreshIndicator(
+                onRefresh: getAllProducts,
+              child: ListView.builder(
+                //itemExtent: 70,
+                //shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  final id = index + 1;
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 1),
+                    child: ListTile(
+                      dense: true,
+                      leading: const SizedBox(
+                        //width: 50,
+                        // height: 80,
+                          child: Image(image: AssetImage('assets/petFit.png'),)
+                      ),
+                      title: Text("$id. ${_productList[index].name!} \n\₹ ${_productList[index].price!}"),
+                      subtitle: Text('Quantity: ${_productList[index].quantity!}', style: const TextStyle(
+                        color: Colors.black,
+                      ),),
+                      trailing: IconButton(onPressed: () {
+                        showDialog(context: context,
+                            barrierDismissible: false,
+                            builder: (BuildContext context) {
+                              //set up the buttons
+                              Widget cancelButton = TextButton(
+                                child: const Text(
+                                  "CANCEL", style: TextStyle(color: Colors.teal),),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                              Widget okButton = TextButton(
+                                child: const Text(
+                                  "OK", style: TextStyle(color: Colors.teal),),
+                                onPressed: () async {
+                                  var result = await _petService.removeProduct(_productList[index].id!);
+                                  if (result != null) {
+                                    //showAlert();
+                                    setState(() {
+                                      getAllProducts();
+                                    });
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                              );
+
+                              return AlertDialog(
+                                title: const Text("Confirm Delete"),
+                                content: const Text(
+                                    'This product will be deleted forever'),
+                                actions: [
+                                  cancelButton,
+                                  okButton,
+                                ],
+                              );
+                            });
+                      }, icon: const Icon(Icons.delete_forever),
+
+                      ),
+                      tileColor: Colors.white,
+                    ),
+                  );
+                }, itemCount: _productList.length,
+              ),
+            );
+          }
+          ),
+      );
   }
 
   showAlert() {

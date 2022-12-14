@@ -32,7 +32,24 @@ class NavigationDrawer extends StatelessWidget {
             child:
             ListTile(
               title: const Text('User Profile'),
-              onTap: () => { },
+              onTap: () => {
+                  showDialog(context: context,
+                  barrierDismissible: false,
+                  useRootNavigator: false,
+                  builder: (BuildContext context){
+                  return AlertDialog(
+                  //insetPadding: EdgeInsets.symmetric(horizontal: 0),
+                  title: const Text("Alert"),
+                  content: const Text('Under development'),
+                  actions: [
+                  TextButton(onPressed: () {
+                  Navigator.of(context).pop();
+                  }, child: const Text('OK', style: TextStyle(color: Colors.teal),))
+                  ],
+                  );
+                  }) //.then((value) => Navigator.of(context).pop());
+
+              },
               textColor: Colors.white,
             ),
           ),

@@ -150,6 +150,7 @@ class _AddProductPageState extends State<AddProductPage> {
                                   child: MyTextField(placeholder: getValue(index, isKey: false), onTapped: () {  },
                                     controller:  getController(index),
                                     errorText: getError(index) ? getErrorText(index): null,
+                                    isNumber: (index == 1 || index == 3) ? true: false,
                                   ),
                                 ),
                               ],
@@ -203,6 +204,7 @@ class _AddProductPageState extends State<AddProductPage> {
   showAlert() {
     showDialog(context: context,
         barrierDismissible: false,
+        useRootNavigator: false,
         builder: (BuildContext context){
           return AlertDialog(
             //insetPadding: EdgeInsets.symmetric(horizontal: 0),
@@ -214,7 +216,7 @@ class _AddProductPageState extends State<AddProductPage> {
               }, child: const Text('OK', style: TextStyle(color: Colors.teal),))
             ],
           );
-        }).then((value) =>  Navigator.of(context).pop());
+        }).then((value) => Navigator.of(context).pop());
   }
 
 }

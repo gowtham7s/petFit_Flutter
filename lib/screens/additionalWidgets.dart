@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 
 class MyTextField extends StatelessWidget {
 
-  const MyTextField({super.key, required this.placeholder, required this.onTapped, this.controller, this.errorText});
+  const MyTextField({super.key, required this.placeholder, required this.onTapped, this.controller, this.errorText, this.isNumber = false, this.readOnly = false});
   final String placeholder;
   final VoidCallback onTapped;
   final TextEditingController? controller;
   final String? errorText;
+  final bool isNumber;
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       enabled: true,
-      keyboardType: TextInputType.multiline,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.multiline,
+      readOnly: readOnly,
       onTap: onTapped,
       //maxLines: null,
       //minLines: 3,

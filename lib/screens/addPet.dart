@@ -198,6 +198,7 @@ class _AddPetPageState extends State<AddPetPage> {
                                 Expanded(
                                   flex: 2,
                                   child: MyTextField(
+                                    readOnly: index == 1 ? true: false,
                                     controller: index == 1 ? _date : getController(index),
                                     placeholder: getValue(index, isKey: false), onTapped: () async {
                                     if (index == 1) {

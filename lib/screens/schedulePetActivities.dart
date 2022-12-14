@@ -73,6 +73,7 @@ class _SchedulePetPageState extends State<SchedulePetPage> {
                                 Expanded(
                                   flex: 3,
                                   child: MyTextField(controller : (index == 0) ? _activity : _when,
+                                    readOnly:  (index == 1) ? true : false,
                                     placeholder: placeholderList[index], onTapped: () async {
                                     if (index == 1) {
                                       ///Display Date Picker

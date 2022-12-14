@@ -41,7 +41,7 @@ class ProductNavigationDrawer extends StatelessWidget {
             ListTile(
               title: const Text('Add Product'),
               onTap: () => {
-                Navigator.of(context).pop(),
+                Navigator.pop(context),
                 Navigator.push(context, MaterialPageRoute(builder: (context) => const AddProductPage())),
               },
               textColor: Colors.white,
