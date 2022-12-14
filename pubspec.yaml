@@ -56,6 +56,10 @@ dependencies:
   webview_flutter: ^3.0.4
   #phone call:
   url_launcher: ^6.1.7
+  #firebase_core:
+  firebase_core: ^2.4.0
+  #crshlytics
+  firebase_crashlytics: ^3.0.7
 
 dev_dependencies:
   flutter_test:
